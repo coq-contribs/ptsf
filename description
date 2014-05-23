@@ -1,0 +1,20 @@
+Name: PTSF
+Title: Explicit Convertibility Proofs in Pure Type Systems
+Url: http://www.andrew.cmu.edu/user/fpv/ptsf/
+Description: Formalization of the proof that PTS and PTS with explicit convertibility proofs (PTSf) are equivalent.
+Keywords: pure type systems, judgmental equality, explicit equality proofs, proof relevance
+Category: Mathematics/Logic/Type theory
+Author: Floris van Doorn
+Email: fpv@andrew.cmu.edu
+Homepage: http://www.andrew.cmu.edu/user/fpv/
+Institution: Carnegie Mellon University
+Author: Herman Geuvers
+Email: herman@cs.ru.nl
+Homepage: http://www.cs.ru.nl/~herman/
+Institution: Radboud University Nijmegen
+Author: Freek Wiedijk
+Email: freek@cs.ru.nl
+Homepage: http://www.cs.ru.nl/~freek/
+Institution: Radboud University Nijmegen
+Require: PTSATR
+License: BSD
