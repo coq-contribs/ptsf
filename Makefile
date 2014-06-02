@@ -46,8 +46,10 @@ TIMER=$(if $(TIMED), $(STDTIME), $(TIMECMD))
 #                        #
 ##########################
 
-COQLIBS?= -R . PTSF
-COQDOCLIBS?=-R . PTSF
+COQLIBS?= -R . PTSF\
+  -R ../../Paris/PTSATR PTSATR
+COQDOCLIBS?=-R . PTSF\
+  -R ../../Paris/PTSATR PTSATR
 
 ##########################
 #                        #
@@ -115,7 +117,7 @@ endif
 #                                     #
 #######################################
 
-all: $(VOFILES) ./Make
+all: $(VOFILES) 
 
 quick:
 	$(MAKE) -f $(firstword $(MAKEFILE_LIST)) all VO=vi
@@ -153,16 +155,7 @@ beautify: $(VFILES:=.beautified)
 	@echo 'Do not do "make clean" until you are sure that everything went well!'
 	@echo 'If there were a problem, execute "for file in $$(find . -name \*.v.old -print); do mv $${file} $${file%.old}; done" in your shell/'
 
-.PHONY: all opt byte archclean clean install uninstall_me.sh uninstall userinstall depend html validate ./Make
-
-###################
-#                 #
-# Subdirectories. #
-#                 #
-###################
-
-./Make:
-	+cd "./Make" && $(MAKE) all
+.PHONY: all opt byte archclean clean install uninstall_me.sh uninstall userinstall depend html validate
 
 ####################
 #                  #
@@ -184,20 +177,19 @@ install:
 	 install -d "`dirname "$(DSTROOT)"$(COQLIBINSTALL)/PTSF/$$i`"; \
 	 install -m 0644 $$i "$(DSTROOT)"$(COQLIBINSTALL)/PTSF/$$i; \
 	done
-	+cd ./Make && $(MAKE) DSTROOT="$(DSTROOT)" INSTALLDEFAULTROOT="$(INSTALLDEFAULTROOT)/./Make" install
 
 install-doc:
-	install -d "$(DSTROOT)"$(COQDOCINSTALL)/PTSF/html
+	install -d "$(DSTROOT)"$(COQDOCINSTALL)/$(INSTALLDEFAULTROOT)/html
 	for i in html/*; do \
-	 install -m 0644 $$i "$(DSTROOT)"$(COQDOCINSTALL)/PTSF/$$i;\
+	 install -m 0644 $$i "$(DSTROOT)"$(COQDOCINSTALL)/$(INSTALLDEFAULTROOT)/$$i;\
 	done
 
 uninstall_me.sh:
 	echo '#!/bin/sh' > $@ 
 	printf 'cd "$${DSTROOT}"$(COQLIBINSTALL)/PTSF && rm -f $(VOFILES) $(CMOFILES) $(CMIFILES) $(CMAFILES) && find . -type d -and -empty -delete\ncd "$${DSTROOT}"$(COQLIBINSTALL) && find "PTSF" -maxdepth 0 -and -empty -exec rmdir -p \{\} \;\n' >> "$@"
-	printf 'cd "$${DSTROOT}"$(COQDOCINSTALL)/PTSF \\\n' >> "$@"
+	printf 'cd "$${DSTROOT}"$(COQDOCINSTALL)/$(INSTALLDEFAULTROOT) \\\n' >> "$@"
 	printf '&& rm -f $(shell find "html" -maxdepth 1 -and -type f -print)\n' >> "$@"
-	printf 'cd "$${DSTROOT}"$(COQDOCINSTALL) && find PTSF/html -maxdepth 0 -and -empty -exec rmdir -p \{\} \;\n' >> "$@"
+	printf 'cd "$${DSTROOT}"$(COQDOCINSTALL) && find $(INSTALLDEFAULTROOT)/html -maxdepth 0 -and -empty -exec rmdir -p \{\} \;\n' >> "$@"
 	chmod +x $@
 
 uninstall: uninstall_me.sh
@@ -207,11 +199,9 @@ clean:
 	rm -f $(VOFILES) $(VOFILES:.vo=.vi) $(GFILES) $(VFILES:.v=.v.d) $(VFILES:=.beautified) $(VFILES:=.old)
 	rm -f all.ps all-gal.ps all.pdf all-gal.pdf all.glob $(VFILES:.v=.glob) $(VFILES:.v=.tex) $(VFILES:.v=.g.tex) all-mli.tex
 	- rm -rf html mlihtml uninstall_me.sh
-	+cd ./Make && $(MAKE) clean
 
 archclean:
 	rm -f *.cmx *.o
-	+cd ./Make && $(MAKE) archclean
 
 printenv:
 	@"$(COQBIN)coqtop" -config
@@ -226,7 +216,6 @@ Makefile: Make
 	mv -f $@ $@.bak
 	"$(COQBIN)coq_makefile" -f $< -o $@
 
-	+cd ./Make && $(MAKE) Makefile
 
 ###################
 #                 #

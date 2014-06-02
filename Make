@@ -1,7 +1,7 @@
+-R ../../Paris/PTSATR/ PTSATR
 -R . PTSF
 f_env.v
 f_equivalence.v
 f_term.v
 f_typ2.v
 f_typ.v
-Make
