@@ -6,6 +6,8 @@ Require Import Peano_dec.
 Require Import Compare_dec.
 Require Import Lt Le Gt Plus Minus.
 
+Local Unset Standard Proposition Elimination Names.
+
 Module f_typ_mod (X:term_sig) (Y:pts_sig X) (TM: f_term_mod X) (EM: f_env_mod X TM) (*(RM: f_red_mod X TM)*).
   Import X Y TM EM.
 
@@ -303,10 +305,7 @@ Qed.
 
 Lemma equality_typing : forall Γ H A B, Γ ⊢ H : A = B -> has_type A Γ /\ has_type B Γ.
 unfold has_type;induction 1;eauto;intuition;[exists B[←a];eapply beta_type_l;eauto|exists B[←a];eapply beta_type_r;eauto|
-try (repeat econstructor;eauto;fail)..].
-econstructor;econstructor;[exact H0|eauto..].
-econstructor;econstructor;[exact H0|eauto..].
-econstructor;econstructor;[exact H1|eauto..].
+(econstructor;eauto;fail)..].
 Qed.
 
 (** Type Correction: if a judgment is valid, the type is either welltyped

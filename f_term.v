@@ -3,7 +3,7 @@
 Require Import base.
 Require Import List Lt Le Gt Plus Minus Peano_dec Compare_dec.
 
-
+Local Unset Standard Proposition Elimination Names.
 
 Module Type f_term_mod (X: term_sig).
   Import X.
