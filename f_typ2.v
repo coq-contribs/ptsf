@@ -135,8 +135,6 @@ apply typ_induc;simpl;intros;trivial;try (econstructor;eassumption).
 constructor;try apply erasure_item_lift;trivial.
 rewrite erasure_subst. econstructor;eassumption.
 (*eq*)
-apply Betac_sym;trivial.
-apply Betac_trans with ε B;trivial.
 apply Betac_Betas;apply Betas_Beta;rewrite erasure_subst;simpl;constructor.
 simpl;apply Betac_Pi;rewrite <- erasure_lem2 in H5;assumption. 
 simpl;apply Betac_La;rewrite <- erasure_lem2 in H7;assumption. 
