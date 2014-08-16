@@ -109,6 +109,12 @@ exists Γ0,(T0·T),(X2 [ ← T]);simpl;rewrite erasure_subst;rewrite eqT;intuiti
 destruct_typ_equiv H True !s.
 destruct_typ_equiv H0 Γ0 T.
 exists Γ0,(T0∽hT),S;intuition;eapply cConv;eassumption.
+(*sort-eq*)
+destruct H as (?&?&?).
+eexists x,_,!s,!s,!t;intuition;eapply cRefl;eapply cSort;eassumption.
+(*var-eq*)
+destruct H as (?&?&?);destruct (erasure_item_lift_rev _ _ _ _ H i) as (?&?&?).
+eexists x,_,#v,#v,x0;intuition;eapply cRefl;eapply cVar;eassumption.
 (*prod-eq*)
 destruct_typ_equiv H True !s.
 destruct_typ_equiv H0 (T::Γ0) !t.
@@ -154,8 +160,6 @@ eapply cAppEq;eassumption.
 eapply cIota with (s:=s1). econstructor;eassumption. Focus 2. econstructor;eassumption. 
 change (!s1) with (!s1 [ ← T]). eapply substitution;try eassumption.
 econstructor. econstructor;eassumption. 
-(*refl*)
-destruct_typ_equiv H True True. do 5 econstructor. intuition; eauto.
 (*sym*)
 destruct_typ_equiv H True True. do 5 econstructor. intuition; eauto.
 (*trans*)
@@ -186,17 +190,17 @@ exists (T::Γ0);intuition;econstructor;eassumption.
 Qed.
 
 
-Theorem PTSl2PTSF : (forall (Γ : UEM.Env) M N,(Γ ⊢ M : N)%UT                                      -> exists Γ' (M' N' : Term), εc Γ' = Γ /\ε M'=M/\ε N'=N/\Γ' ⊢ M' : N')/\
-                    (forall Γ M N,(exists A B,(Γ ⊢ M : A)%UT/\(Γ ⊢ N : B)%UT/\ M ≡ N)-> exists Γ' M' N', εc Γ'=Γ/\ε M'=M/\ε N'=N/\Γ' ⊢ M' = N')/\
-                    (forall Γ    ,(exists M N,(Γ ⊢ M : N)%UT)                         -> exists Γ'      , εc Γ'=Γ/\                Γ' ⊣).
+Theorem PTSl2PTSF : (forall Γ M N,(Γ ⊢' M : N)%UT                                      -> exists Γ' M' N', εc Γ'=Γ/\ε M'=M/\ε N'=N/\Γ' ⊢ M' : N')/\
+                    (forall Γ M N,(exists A B,(Γ ⊢' M : A)%UT/\(Γ ⊢' N : B)%UT/\ M ≡ N)-> exists Γ' M' N', εc Γ'=Γ/\ε M'=M/\ε N'=N/\Γ' ⊢ M' = N')/\
+                    (forall Γ    ,(exists M N,(Γ ⊢' M : N)%UT)                         -> exists Γ'      , εc Γ'=Γ/\                Γ' ⊣).
 repeat split;intros.
 (*typ*)
-apply PTS_equiv_PTSe in H. apply PTSeq2PTSF in H. 
+apply PTS.legacy2typ in H as (?&?). apply PTS_equiv_PTSe in H. apply PTSeq2PTSF in H. 
 assumption.
 (*eq*)
-destruct H as (?&?&?&?&?). 
+destruct H as (?&?&?&?&?). apply PTS.legacy2typ in H as (?&?);apply PTS.legacy2typ in H0 as (?&?).
 destruct (Betac_confl _ _ H1) as (?&?&?).
-set (SubjectRed _ _ _ H _ H2);set (SubjectRed _ _ _ H0 _ H3).
+set (SubjectRed _ _ _ H _ H4);set (SubjectRed _ _ _ H0 _ H5).
 destruct PTS_equiv_PTSe as (_&eq). 
 destruct (eq Γ M x1 x) as (_&eq2).
 destruct (eq Γ x1 N x0) as (_&eq3).
@@ -210,33 +214,33 @@ assert (Γ0⊣) as Γ0wf;[eapply wf_typ;eassumption|].
 destruct (temp _ _ _ _ HMN0 Γ0 Γ0wf) as (hT&C&D&eqC2&eqD&HCD);[assumption|].
 rewrite eqM in eqC2;symmetry in eqC2.
 edestruct equality_typing as ((?&?)&_). eexact HCD.
-destruct (erasure_injectivity_term _ _ _ _ _ HN H4 eqC2).
+destruct (erasure_injectivity_term _ _ _ _ _ HN H6 eqC2).
 do 3 econstructor. do 3 split. eassumption.
 econstructor.
 eapply cTrans. eassumption.
 eapply cTrans; eassumption.
 (*wf*)
 destruct H as (?&?&?). 
-apply PTS_equiv_PTSe in H. apply PTSeq2PTSF in H as (?&?&?&?&?&?&?).
+apply PTS.legacy2typ in H as (?&?). apply PTS_equiv_PTSe in H. apply PTSeq2PTSF in H as (?&?&?&?&?&?&?).
 subst;econstructor;repeat split. eapply wf_typ;eassumption.
 Qed.
 
-Theorem PTSF2PTSl : (forall Γ M N,Γ ⊢ M : N -> (εc Γ ⊢ ε M : ε N)%UT)/\
-                    (forall Γ M N,Γ ⊢ M = N -> (exists A B,(εc Γ ⊢ ε M : A)%UT/\(εc Γ ⊢ ε N : B)%UT/\ ε M ≡ ε N))/\
-                    (forall Γ    ,Γ ⊣       -> (εc Γ ⊣)%UT).
+Theorem PTSF2PTSl : (forall Γ M N,Γ ⊢ M : N -> (εc Γ ⊢' ε M : ε N)%UT)/\
+                    (forall Γ M N,Γ ⊢ M = N -> (exists A B,(εc Γ ⊢' ε M : A)%UT/\(εc Γ ⊢' ε N : B)%UT/\ ε M ≡ ε N))/\
+                    (forall Γ    ,Γ ⊣       -> (εc Γ ⊣')%UT).
 repeat split;intros.
 (*typ*)
-apply PTSF2PTS;assumption.
+apply PTS.typ2legacy;apply PTSF2PTS;assumption.
 (*eq*)
 destruct H;edestruct equality_typing as ((?&?)&(?&?));[eexact H|].
-do 2 econstructor;repeat split;try eapply PTSF2PTS;try eassumption.
+do 2 econstructor;repeat split;try apply PTS.typ2legacy;try eapply PTSF2PTS;try eassumption.
 (*wf*)
-apply PTSF2PTS;assumption.
+apply PTS.typ2legacy;apply PTSF2PTS;assumption.
 Qed.
 
-Theorem PTSlequivPTSF : (forall Γ M N,(Γ ⊢ M : N)%UT                                      <-> exists Γ' M' N', εc Γ'=Γ/\ε M'=M/\ε N'=N/\Γ' ⊢ M' : N')/\
-                        (forall Γ M N,(exists A B,(Γ ⊢ M : A)%UT/\(Γ ⊢ N : B)%UT/\ M ≡ N)<-> exists Γ' M' N', εc Γ'=Γ/\ε M'=M/\ε N'=N/\Γ' ⊢ M' = N')/\
-                        (forall Γ    ,(Γ ⊣)%UT                                            <-> exists Γ'      , εc Γ'=Γ/\                Γ' ⊣).
+Theorem PTSlequivPTSF : (forall Γ M N,(Γ ⊢' M : N)%UT                                      <-> exists Γ' M' N', εc Γ'=Γ/\ε M'=M/\ε N'=N/\Γ' ⊢ M' : N')/\
+                        (forall Γ M N,(exists A B,(Γ ⊢' M : A)%UT/\(Γ ⊢' N : B)%UT/\ M ≡ N)<-> exists Γ' M' N', εc Γ'=Γ/\ε M'=M/\ε N'=N/\Γ' ⊢ M' = N')/\
+                        (forall Γ    ,(Γ ⊣')%UT                                            <-> exists Γ'      , εc Γ'=Γ/\                Γ' ⊣).
 repeat split;intros;try (eapply PTSl2PTSF;eassumption);try (destruct H as (?&?&?&?&?&?&?);subst;eapply PTSF2PTSl;eassumption);
 try (destruct H as (?&?&?);subst;eapply PTSF2PTSl;eassumption).
 destruct H.
@@ -263,7 +267,7 @@ edestruct Heq as (?Γ&?A&?A'&?&?&?&?). do 2 econstructor;repeat split;[eapply Ht
 destruct H13.
 eapply context_conversion in H13 as (?&?&?&?&?&?);[rewrite H11 in H13;rewrite H12 in H14|eapply wf_typ;eexact H7|assumption].
 edestruct equality_typing as ((?&?)&(?&?));[eexact H15|].
-eapply erasure_injectivity_term in H13 as (?&?);[eapply cSym in H13|eassumption..].
+eapply erasure_injectivity_term in H13 as (?&?);[apply cSym in H13|eassumption..].
 eapply erasure_injectivity_term in H14 as (?&?);[                 |eassumption..].
 assert (exists H,Γ ⊢ H : A = A') as (HH&?) by (econstructor;eapply cTrans;[eassumption|eapply cTrans;eassumption]).
 replace ε B' with (ε ((B'↑1#1)[←#0∽HH↑h1])) in H9 by (symmetry;apply erasure_lem2).
@@ -273,7 +277,7 @@ edestruct Heq as (?Γ&?B&?B'&?&?&?&?). do 2 econstructor;repeat split;[eapply Ht
 destruct H22.
 eapply context_conversion in H22 as (?&?&?&?&?&?);[rewrite H20 in H22;rewrite H21 in H23|eapply wf_typ;eexact H5|assumption].
 edestruct equality_typing as ((?&?)&(?&?));[eexact H24|].
-eapply erasure_injectivity_term in H22 as (?&?);[eapply cSym in H22|eassumption..].
+eapply erasure_injectivity_term in H22 as (?&?);[apply cSym in H22|eassumption..].
 eapply erasure_injectivity_term in H23 as (?&?);[                 |eassumption..].
 do 3 econstructor.
 eassumption.

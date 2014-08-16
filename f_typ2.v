@@ -136,8 +136,8 @@ constructor;try apply erasure_item_lift;trivial.
 rewrite erasure_subst. econstructor;eassumption.
 (*eq*)
 apply Betac_sym;trivial.
-rewrite erasure_subst. apply Betac_sym.
-apply Betac_Betas;apply Betas_Beta. constructor.
+apply Betac_trans with ε B;trivial.
+apply Betac_Betas;apply Betas_Beta;rewrite erasure_subst;simpl;constructor.
 simpl;apply Betac_Pi;rewrite <- erasure_lem2 in H5;assumption. 
 simpl;apply Betac_La;rewrite <- erasure_lem2 in H7;assumption. 
 simpl;apply Betac_App;assumption.
@@ -685,10 +685,9 @@ edestruct IHtyp2 with (HH:=x::HH);simpl;[econstructor;eassumption..| |].
 eapply msub_S with (s:=s1);[eapply subst_mult_cons;eassumption|do 2 econstructor|
 change !s1 with !s1[n ← a1];eapply substitution;try eassumption;eapply wf_typ;eassumption|
 eassumption|do 2 econstructor|econstructor].
-econstructor;eapply cAbsEq;simpl;try eassumption;instantiate;solve.
-solve. solve.
+econstructor;eapply cAbsEq;simpl;try eassumption;solve.
 (*app*)
-simpl. rewrite subst_mult_app.
+simpl;rewrite subst_mult_app.
 edestruct IHtyp1;[eassumption..|].
 edestruct IHtyp2;[eassumption..|].
 econstructor;eapply cAppEq with (A:=A[n ← a1]) (B:=B[S n ← a1]) (B':=subst_mult_term 1 B [S n ← a2] HH);
