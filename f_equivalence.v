@@ -109,6 +109,12 @@ exists Γ0,(T0·T),(X2 [ ← T]);simpl;rewrite erasure_subst;rewrite eqT;intuiti
 destruct_typ_equiv H True !s.
 destruct_typ_equiv H0 Γ0 T.
 exists Γ0,(T0∽hT),S;intuition;eapply cConv;eassumption.
+(*sort-eq*)
+destruct H as (?&?&?).
+eexists x,_,!s,!s,!t;intuition;eapply cRefl;eapply cSort;eassumption.
+(*var-eq*)
+destruct H as (?&?&?);destruct (erasure_item_lift_rev _ _ _ _ H i) as (?&?&?).
+eexists x,_,#v,#v,x0;intuition;eapply cRefl;eapply cVar;eassumption.
 (*prod-eq*)
 destruct_typ_equiv H True !s.
 destruct_typ_equiv H0 (T::Γ0) !t.
@@ -154,8 +160,6 @@ eapply cAppEq;eassumption.
 eapply cIota with (s:=s1). econstructor;eassumption. Focus 2. econstructor;eassumption. 
 change (!s1) with (!s1 [ ← T]). eapply substitution;try eassumption.
 econstructor. econstructor;eassumption. 
-(*refl*)
-destruct_typ_equiv H True True. do 5 econstructor. intuition; eauto.
 (*sym*)
 destruct_typ_equiv H True True. do 5 econstructor. intuition; eauto.
 (*trans*)
