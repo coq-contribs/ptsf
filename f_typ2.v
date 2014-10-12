@@ -683,7 +683,7 @@ edestruct IHtyp2 with (HH:=x::HH);simpl;[econstructor;eassumption..| |].
 eapply msub_S with (s:=s1);[eapply subst_mult_cons;eassumption|do 2 econstructor|
 change !s1 with !s1[n ← a1];eapply substitution;try eassumption;eapply wf_typ;eassumption|
 eassumption|do 2 econstructor|econstructor].
-econstructor;eapply cAbsEq;simpl;try eassumption;solve.
+econstructor;eapply cAbsEq;simpl;try eassumption;repeat solve.
 (*app*)
 simpl;rewrite subst_mult_app.
 edestruct IHtyp1;[eassumption..|].
