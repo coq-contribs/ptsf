@@ -1,4 +1,3 @@
--R ../../Paris/PTSATR/ PTSATR
 -R . PTSF
 f_env.v
 f_equivalence.v
