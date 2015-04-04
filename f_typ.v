@@ -1,6 +1,6 @@
 (** *Typing rules for PTSF.*)
 Require Import f_term f_env.
-Require Import base.
+From PTSATR Require Import base.
 Require Import List.
 Require Import Peano_dec.
 Require Import Compare_dec.

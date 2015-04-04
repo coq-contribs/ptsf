@@ -1,5 +1,6 @@
 (** * Typing Environment Definition and Function Manipulation.*)
-Require Import base f_term.
+From PTSATR Require Import base.
+Require Import f_term.
 Require Import List.
 Require Import Peano_dec.
 Require Import Compare_dec.

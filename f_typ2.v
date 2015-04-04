@@ -1,7 +1,7 @@
 (** * Here will we do some more advanced stuff with typing.*)
 Require Import f_term f_env f_typ.
-Require Import ut_term ut_red ut_env ut_typ ut_sr.
-Require Import base.
+From PTSATR Require Import ut_term ut_red ut_env ut_typ ut_sr.
+From PTSATR Require Import base.
 Require Import List.
 Require Import Peano_dec.
 Require Import Compare_dec.

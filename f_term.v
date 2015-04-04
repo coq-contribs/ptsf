@@ -1,6 +1,6 @@
 (** * Term definition for PTSf and de Bruijn manipulation . *)
 
-Require Import base.
+From PTSATR Require Import base.
 Require Import List Lt Le Gt Plus Minus Peano_dec Compare_dec.
 
 Local Unset Standard Proposition Elimination Names.

@@ -1,10 +1,10 @@
 (** The equivalence between PTS and PTSF.*)
-Require Import base.
+From PTSATR Require Import base.
 Require Import f_term f_env f_typ f_typ2 .
-Require Import ut_term ut_red ut_env ut_typ ut_sr ut_typ_eq.
-Require Import final_result.
+From PTSATR Require Import ut_term ut_red ut_env ut_typ ut_sr ut_typ_eq.
+From PTSATR Require Import final_result.
 Require Import List Lt Le Gt Plus Minus Peano_dec Compare_dec.
-Require Import term red env typ_annot glue strip final_result.
+From PTSATR Require Import term red env typ_annot glue strip final_result.
 
 Module f_equiv_mod (X:term_sig) (Y:pts_sig X) (TM:term_mod X) (EM: env_mod X TM) (RM: red_mod X TM) (UTM:ut_term_mod X) 
   (UEM: ut_env_mod X UTM) (URM: ut_red_mod X UTM) (PTS : ut_sr_mod X Y UTM UEM URM) (PTSe : ut_typ_eq_mod X Y UTM UEM URM PTS)
