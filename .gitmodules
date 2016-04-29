@@ -1,0 +1,3 @@
+[submodule "ptsatr"]
+	path = ptsatr
+	url = https://github.com/coq-contribs/ptsatr.git
