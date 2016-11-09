@@ -1,4 +1,4 @@
--R . PTSF -R ptsatr PTSATR
+-R . PTSF
 
 f_env.v
 f_equivalence.v
