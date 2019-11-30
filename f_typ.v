@@ -6,8 +6,6 @@ Require Import Peano_dec.
 Require Import Compare_dec.
 Require Import Lt Le Gt Plus Minus.
 
-Local Unset Standard Proposition Elimination Names.
-
 Module f_typ_mod (X:term_sig) (Y:pts_sig X) (TM: f_term_mod X) (EM: f_env_mod X TM) (*(RM: f_red_mod X TM)*).
   Import X Y TM EM.
 
